@@ -11,6 +11,8 @@
   },
   "devDependencies": {
     "@vue/cli-service": "^3.0.3",
+    "axios": "^0.18.0",
+    "echarts": "^4.2.0-rc.2",
     "vue-template-compiler": "^2.5.17"
   },
   "postcss": {
