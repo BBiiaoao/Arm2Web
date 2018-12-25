@@ -31,12 +31,20 @@ module.exports = {
     // webpack-dev-server 相关配置
     devServer: {
         open: true,                                 //配置自动启动浏览器
-        host: '127.0.0.1',
-        port: 6688,                                 // 端口号
+        host: '0.0.0.0',
+        port: 8080,                                 // 端口号
         https: false,
         hotOnly: false,                             // https:{type:Boolean}
-        proxy: null,                                // 设置代理
-        // proxy: 'http://localhost:4000'           // 配置跨域处理,只有一个代理
+        // proxy: null,                                // 设置代理
+        proxy: { // 配置跨域
+            '/api':{
+                target:'http://120.78.191.131:8080/', //源地址
+                changeOrigin:true,                    //改变源
+                pathRewrite:{
+                    '^/api':'http://120.78.191.131:8080/' //使用'api'代替target里面的地址
+                }
+            }
+        },                                           // 配置跨域处理,只有一个代理
         // proxy: {                                 // 配置多个代理
         //     '/api': {
         //         target: '<url>',

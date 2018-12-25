@@ -2,19 +2,39 @@
   <div id="app">
     <h1>hhhh</h1>
     <div ref="chartsContainer" class="chartsContainer">
-      <h1>jj</h1>
+      <div class="voltageChart chart">
+        <chart v-if="showChart" :parameter="voltage" :name="name[0]"></chart>
+      </div>
+      <div class="frequencyChart chart">
+        <chart v-if="showChart" :parameter="frequency" :name="name[1]"></chart>
+      </div>
+      <div class="currentChart chart">
+        <chart v-if="showChart" :parameter="current" :name="name[2]"></chart>
+      </div>
+      <div class="activePowerChart chart">
+        <chart v-if="showChart" :parameter="activePower" :name="name[3]"></chart>
+      </div>
+      <div class="reactivePowerChart chart">
+        <chart v-if="showChart" :parameter="reactivePower" :name="name[4]"></chart>
+    </div>
     </div>
   </div>
 </template>
 
 <script>
-  import echarts from 'echarts';
+  import Vue from 'vue'
+  import Chart from './components/Chart'
 
 
 export default {
   name: 'app',
+  components:{
+    Chart,
+  },
   data(){
     return{
+      showChart:false,
+      name:["电压","频率","电流","有功功率","无功功率"],
       voltage:[],
       frequency:[],
       current:[],
@@ -23,28 +43,28 @@ export default {
     }
   },
   created() {
-      this.$axios.get("120.78.191.131:8080/arm2web/socket/json")
-              .then(res=>{
-                console.log(res);
+    this.$axios.get("api/arm2web/socket/json")
+            .then(res=>{
+              const resData=res.data;
+              resData.forEach((item,index)=>{
+                this.addObj(this.voltage,index,item.voltage);
+                this.addObj(this.frequency,index,item.frequency);
+                this.addObj(this.current,index,item.current);
+                this.addObj(this.activePower,index,item.activePower);
+                this.addObj(this.reactivePower,index,item.reactivePower);
               })
+              this.showChart=true
+            });
+    console.log(this.voltage);
   },
   mounted() {
     // 基于准备好的dom，初始化echarts实例
-    var myChart = echarts.init(this.$refs.chartsContainer);
-  // 绘制图表
-    myChart.setOption({
-      title: { text: 'voltage' },
-      tooltip: {},
-      xAxis: {
-        data: ["衬衫","羊毛衫","雪纺衫","裤子","高跟鞋","袜子"]
-      },
-      yAxis: {},
-      series: [{
-        name: '销量',
-        type: 'line',
-        data: [5, 20, 36, 10, 10, 20]
-      }]
-    });
+
+  },
+  methods:{
+    addObj(accept,index,obj){
+      Vue.set(accept, index, obj)
+    }
   }
 }
 </script>
@@ -58,8 +78,4 @@ export default {
   color: #2c3e50;
   margin-top: 60px;
 }
-  .chartsContainer{
-    width:80%;
-    height: 400px;
-  }
 </style>
