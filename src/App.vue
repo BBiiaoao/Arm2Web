@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <h1>hhhh</h1>
+    <!--<h1>hhhh</h1>-->
     <div ref="chartsContainer" class="chartsContainer">
       <div class="voltageChart chart">
         <chart v-if="showChart" :parameter="voltage" :name="name[0]"></chart>
@@ -56,7 +56,7 @@ export default {
   },
   methods:{
     getData(){
-      this.$axios.get("api/arm2web/socket/json")
+      this.$axios.get("/api/socket/json")
               .then(res=>{
                 const self=this;
                 const resData=res.data;
@@ -72,7 +72,6 @@ export default {
                   self.getData();
                   self.reload();
                 },2000);//2秒后定时发送请求
-                console.log(22);
               });
     },
     reload(){
@@ -97,4 +96,7 @@ export default {
   color: #2c3e50;
   margin-top: 60px;
 }
+  .chart{
+    margin-bottom: 20px;
+  }
 </style>

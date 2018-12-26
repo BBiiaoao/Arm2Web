@@ -38,10 +38,10 @@ module.exports = {
         // proxy: null,                                // 设置代理
         proxy: { // 配置跨域
             '/api':{
-                target:'http://120.78.191.131:8080/', //源地址
+                target:'http://192.168.3.153:8080', //源地址
                 changeOrigin:true,                    //改变源
                 pathRewrite:{
-                    '^/api':'http://120.78.191.131:8080/' //使用'api'代替target里面的地址
+                    '^/api':'http://192.168.3.153:8080/' //使用'api'代替target里面的地址
                 }
             }
         },                                           // 配置跨域处理,只有一个代理
