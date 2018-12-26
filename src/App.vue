@@ -31,6 +31,11 @@ export default {
   components:{
     Chart,
   },
+  provide(){
+    return{
+      reload:this.reload
+    }
+  },
   data(){
     return{
       showChart:false,
@@ -43,25 +48,39 @@ export default {
     }
   },
   created() {
-    this.$axios.get("api/arm2web/socket/json")
-            .then(res=>{
-              const resData=res.data;
-              resData.forEach((item,index)=>{
-                this.addObj(this.voltage,index,item.voltage);
-                this.addObj(this.frequency,index,item.frequency);
-                this.addObj(this.current,index,item.current);
-                this.addObj(this.activePower,index,item.activePower);
-                this.addObj(this.reactivePower,index,item.reactivePower);
-              })
-              this.showChart=true
-            });
-    console.log(this.voltage);
+    this.getData();
   },
   mounted() {
     // 基于准备好的dom，初始化echarts实例
 
   },
   methods:{
+    getData(){
+      this.$axios.get("api/arm2web/socket/json")
+              .then(res=>{
+                const self=this;
+                const resData=res.data;
+                resData.forEach((item,index)=>{
+                  this.addObj(this.voltage,index,item.voltage);
+                  this.addObj(this.frequency,index,item.frequency);
+                  this.addObj(this.current,index,item.current);
+                  this.addObj(this.activePower,index,item.activePower);
+                  this.addObj(this.reactivePower,index,item.reactivePower);
+                });
+                this.showChart=true;
+                setTimeout(function(){
+                  self.getData();
+                  self.reload();
+                },2000);//2秒后定时发送请求
+                console.log(22);
+              });
+    },
+    reload(){
+      this.showChart=false;
+      this.$nextTick(()=>{
+        this.showChart=true
+      })
+    },
     addObj(accept,index,obj){
       Vue.set(accept, index, obj)
     }

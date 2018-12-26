@@ -6,6 +6,7 @@
 <script>
     import echarts from 'echarts';
     export default {
+        inject:['reload'],
         name: "chart",
         props:{
             parameter:Array,
