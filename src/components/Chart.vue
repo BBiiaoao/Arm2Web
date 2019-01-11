@@ -22,6 +22,7 @@
             const myChart = echarts.init(this.$refs.echartContainer);
             // 绘制图表
             const time = this.getXtime();
+            myChart.clear();
             myChart.setOption({
                 title:[{
                     textStyle: {
@@ -57,12 +58,12 @@
                     //     4, 5, 5, 5, 5,
                     //     5, 5,5, 5, 5]
                 }]
-            });
+            },{notMerge: false, lazyUpdate: false, silent:false});
         },
         methods: {
             getXtime() {
                 const myDate = new Date();//获取系统当前时间
-                const t = [];
+                let t = [];
                 for (let i = 1; i < 16; i++) {
                     if ((myDate.getSeconds() - i * 2) > 0) {
                         t.push(myDate.getHours() + ":" + myDate.getMinutes() + ":" + (myDate.getSeconds() - i * 2))

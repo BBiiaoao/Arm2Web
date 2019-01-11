@@ -22,26 +22,23 @@ module.exports = {
         // 启用 CSS modules for all css / pre-processor files.
         modules: false
     },
-    // use thread-loader for babel & TS in production build
-    // enabled by default if the machine has more than 1 cores
     parallel: require('os').cpus().length > 1,
-    // PWA 插件相关配置
-    // see https://github.com/vuejs/vue-cli/tree/dev/packages/%40vue/cli-plugin-pwa
     pwa: {},
     // webpack-dev-server 相关配置
     devServer: {
         open: true,                                 //配置自动启动浏览器
-        host: '0.0.0.0',
+        host: 'localhost',
         port: 8080,                                 // 端口号
         https: false,
         hotOnly: false,                             // https:{type:Boolean}
         // proxy: null,                                // 设置代理
-        proxy: { // 配置跨域
+        proxy: {                                    // 配置跨域
             '/api':{
-                target:'http://192.168.3.153:8080', //源地址
-                changeOrigin:true,                    //改变源
+                target:'http://120.78.191.131:8080', //源地址
+                changeOrigin:true,                  //改变源
+                ws:true,                            //是否代理websockets
                 pathRewrite:{
-                    '^/api':'http://192.168.3.153:8080/' //使用'api'代替target里面的地址
+                    '^/api':''
                 }
             }
         },                                           // 配置跨域处理,只有一个代理
@@ -59,6 +56,6 @@ module.exports = {
     },
     // 第三方插件配置
     pluginOptions: {
-        // ...
+
     }
 }
