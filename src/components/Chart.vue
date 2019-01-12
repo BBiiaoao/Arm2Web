@@ -86,9 +86,8 @@
         align-items: center;
         margin: 0 auto;
         width: 80%;
-        background:#eee;
+        background:#FAFAFA;
         border-radius: 10px;
-        box-shadow:-2px 2px 0px 0px #202020, -10px 10px 40px 0px rgba(0, 0, 0, 0.3);
     }
     .title{
         width:100%;
