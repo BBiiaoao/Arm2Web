@@ -1,8 +1,8 @@
 <template>
     <div id="echart">
         <p class="title">{{name}}</p>
-        <div class="echartContainer" ref="echartContainer">
-        </div>
+        <div class="echartContainer" ref="echartContainer"></div>
+        <div></div>
     </div>
 </template>
 
@@ -11,9 +11,9 @@
 
     export default {
         inject: ['reload'],
-        name: "chart",
         props: {
-            parameter: Array,
+            measureOption: Array,
+            transmissionOption: Array,
             name: String
         },
         created() {
@@ -24,41 +24,56 @@
             const time = this.getXtime();
             myChart.clear();
             myChart.setOption({
-                title:[{
+                title: [{
                     textStyle: {
                         align: 'center'
                     }
                 }],
+                legend: {
+                    data: ['测量数据', '传输数据']
+                },
                 tooltip: {},
                 animation: false,
                 xAxis: {
-                    name:'时间',
+                    name: '时间',
                     //不从0开始
-                    scale:true,
+                    scale: true,
                     data: [time[0], time[1], time[2], time[3], time[4], time[5],
                         time[6], time[7], time[8], time[9], time[10], time[11],
                         time[12], time[13], time[14],],
                     //x值在刻度下面
-                    axisTick:{
-                        alignWithLabel:true
+                    axisTick: {
+                        alignWithLabel: true
                     },
-                    axisLine:{
+                    axisLine: {
                         //一条轴线从另一条轴线0开始
-                        onZero:true
+                        onZero: true
                     }
                 },
                 yAxis: {},
-                series: [{
-                    name: this.name,
-                    type: 'line',
-                    data: [this.parameter[0], this.parameter[1], this.parameter[2], this.parameter[3], this.parameter[4],
-                        this.parameter[5], this.parameter[6], this.parameter[7], this.parameter[8], this.parameter[9],
-                        this.parameter[10], this.parameter[11], this.parameter[12], this.parameter[13], this.parameter[14]]
-                    // data: [this.parameter[0], 3, 3, 4, 3,
-                    //     4, 5, 5, 5, 5,
-                    //     5, 5,5, 5, 5]
-                }]
-            },{notMerge: false, lazyUpdate: false, silent:false});
+                series: [
+                    {
+                        name: '测量数据',
+                        type: 'line',
+                        data: [this.measureOption[0], this.measureOption[1], this.measureOption[2], this.measureOption[3], this.measureOption[4],
+                            this.measureOption[5], this.measureOption[6], this.measureOption[7], this.measureOption[8], this.measureOption[9],
+                            this.measureOption[10], this.measureOption[11], this.measureOption[12], this.measureOption[13], this.measureOption[14]]
+                        // data: [this.measureOption[0], 3, 3, 4, 3,
+                        //     4, 5, 5, 5, 5,
+                        //     5, 5,5, 5, 5]
+                    },
+                    {
+                        name: '传输数据',
+                        type: 'line',
+                        data: [this.transmissionOption[0], this.transmissionOption[1], this.transmissionOption[2], this.transmissionOption[3], this.transmissionOption[4],
+                            this.transmissionOption[5], this.transmissionOption[6], this.transmissionOption[7], this.transmissionOption[8], this.transmissionOption[9],
+                            this.transmissionOption[10], this.transmissionOption[11], this.transmissionOption[12], this.transmissionOption[13], this.transmissionOption[14]]
+                        // data: [this.measureOption[0], 3, 3, 4, 3,
+                        //     4, 5, 5, 5, 5,
+                        //     5, 5,5, 5, 5]
+                    }
+                ]
+            }, {notMerge: false, lazyUpdate: false, silent: false});
         },
         methods: {
             getXtime() {
@@ -80,21 +95,23 @@
 </script>
 
 <style scoped>
-    #echart{
-       display: flex;
+    #echart {
+        display: flex;
         flex-direction: column;
         align-items: center;
         margin: 0 auto;
         width: 80%;
-        background:#FAFAFA;
+        background: #FAFAFA;
         border-radius: 10px;
     }
-    .title{
-        width:100%;
+
+    .title {
+        width: 100%;
         margin: 10px 0 0;
         font-size: 20px;
 
     }
+
     .echartContainer {
         width: 100%;
         height: 400px;
