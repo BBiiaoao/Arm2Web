@@ -34,8 +34,8 @@ module.exports = {
         // proxy: null,                                // 设置代理
         proxy: {                                    // 配置跨域
             '/api':{
-                target:'http://192.168.3.153:8080', //源地址
-                // target:'http://120.78.191.131:8080', //源地址
+                // target:'http://192.168.3.153:8080', //源地址
+                target:'http://120.78.191.131:8080', //源地址
                 changeOrigin:true,                  //改变源
                 ws:true,                            //是否代理websockets
                 pathRewrite:{
