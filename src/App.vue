@@ -1,57 +1,38 @@
 <template>
     <div id="app">
+        <el-button class="btn" type="primary" v-on:click="changeView()">{{showChartContainer == true
+            ?'显示实时表格':'显示实时折线图'}}
+        </el-button>
         <div class="topNavContainer">
             <el-tabs tab-position="tap" type="border-card" @tab-click="show($event)">
                 <el-tab-pane v-for="(Aitem,Aindex) in addressName" :key=Aindex :label=Aitem.message>
-                    <div class="leftAreaContainer">
+                    <div class="leftAreaContainer" v-if="showChartContainer">
                         <el-tabs tab-position="left" @tab-click="reload()">
                             <el-tab-pane v-for="(Nitem,Nindex) in name" :key=Nindex :label=Nitem>
                                 <div class="rightAreaContainer">
-                                    <div class="chart">
-                                        <chart v-if="showChart" :measureOption=measureOption[Nindex]
-                                               :name="name[Nindex]" :transmissionOption="transmissionOption[Nindex]"></chart>
+                                    <div class="chart" v-cloak>
+                                        <!-- <chart v-if="showChart" :measureOption=measureOption[Nindex]
+                                                :name="name[Nindex]"
+                                                :transmissionOption="transmissionOption[Nindex]"></chart>-->
                                     </div>
-                                </div>
-                                <div class="formContainer">
-                                    <el-table
-                                            :data="tableData3"
-                                            border
-                                            style="width: 100%">
-                                        <el-table-column
-                                                fixed
-                                                prop="date"
-                                                label="日期"
-                                                width="150">
-                                        </el-table-column>
-                                        <el-table-column
-                                                prop="name"
-                                                label="姓名"
-                                                width="120">
-                                        </el-table-column>
-                                        <el-table-column
-                                                prop="province"
-                                                label="省份"
-                                                width="120">
-                                        </el-table-column>
-                                        <el-table-column
-                                                prop="city"
-                                                label="市区"
-                                                width="120">
-                                        </el-table-column>
-                                        <el-table-column
-                                                prop="address"
-                                                label="地址"
-                                                width="300">
-                                        </el-table-column>
-                                        <el-table-column
-                                                prop="zip"
-                                                label="邮编"
-                                                width="120">
-                                        </el-table-column>
-                                    </el-table>
                                 </div>
                             </el-tab-pane>
                         </el-tabs>
+                    </div>
+                    <div class="formContainer" v-if="showForm">
+                        <el-table :data="tableData" border style="width: 100%">
+                            <el-table-column fixed prop="data" width="120"></el-table-column>
+                            <el-table-column prop="voltage" :label=name[0] width="120"></el-table-column>
+                            <el-table-column prop="frequency" :label=name[1] width="120"></el-table-column>
+                            <el-table-column prop="current" :label=name[2] width="120"></el-table-column>
+                            <el-table-column prop="activePower" :label=name[3] width="120"></el-table-column>
+                            <el-table-column prop="reactivePower" :label=name[4] width="120"></el-table-column>
+                            <el-table-column prop="activeElectric" :label=name[5] width="120"></el-table-column>
+                            <el-table-column prop="reactiveElectric" :label=name[6] width="120"></el-table-column>
+                            <el-table-column prop="dcVoltage" :label=name[7] width="120"></el-table-column>
+                            <el-table-column prop="dcCurrent" :label=name[8] width="120"></el-table-column>
+                            <el-table-column prop="dcElectric" :label=name[9] width="120"></el-table-column>
+                        </el-table>
                     </div>
                 </el-tab-pane>
             </el-tabs>
@@ -76,56 +57,33 @@
         },
         data() {
             return {
-                tableData3: [{
-                    date: '2016-05-03',
-                    name: '王小虎',
-                    province: '上海',
-                    city: '普陀区',
-                    address: '上海市普陀区金沙江路 1518 弄',
-                    zip: 200333
+                tableData: [{
+                    data: '传输数据',
+                    voltage: 0,
+                    frequency: 0,
+                    current: 0,
+                    activePower: 0,
+                    reactivePower: 0,
+                    activeElectric: 0,
+                    reactiveElectric: 0,
+                    dcVoltage: 0,
+                    dcCurrent: 0,
+                    dcElectric: 0
                 }, {
-                    date: '2016-05-02',
-                    name: '王小虎',
-                    province: '上海',
-                    city: '普陀区',
-                    address: '上海市普陀区金沙江路 1518 弄',
-                    zip: 200333
-                }, {
-                    date: '2016-05-04',
-                    name: '王小虎',
-                    province: '上海',
-                    city: '普陀区',
-                    address: '上海市普陀区金沙江路 1518 弄',
-                    zip: 200333
-                }, {
-                    date: '2016-05-01',
-                    name: '王小虎',
-                    province: '上海',
-                    city: '普陀区',
-                    address: '上海市普陀区金沙江路 1518 弄',
-                    zip: 200333
-                }, {
-                    date: '2016-05-08',
-                    name: '王小虎',
-                    province: '上海',
-                    city: '普陀区',
-                    address: '上海市普陀区金沙江路 1518 弄',
-                    zip: 200333
-                }, {
-                    date: '2016-05-06',
-                    name: '王小虎',
-                    province: '上海',
-                    city: '普陀区',
-                    address: '上海市普陀区金沙江路 1518 弄',
-                    zip: 200333
-                }, {
-                    date: '2016-05-07',
-                    name: '王小虎',
-                    province: '上海',
-                    city: '普陀区',
-                    address: '上海市普陀区金沙江路 1518 弄',
-                    zip: 200333
+                    data: '测量数据',
+                    voltage: 0,
+                    frequency: 0,
+                    current: 0,
+                    activePower: 0,
+                    reactivePower: 0,
+                    activeElectric: 0,
+                    reactiveElectric: 0,
+                    dcVoltage: 0,
+                    dcCurrent: 0,
+                    dcElectric: 0
                 }],
+                showForm: false,
+                showChartContainer: true,
                 showChart: false,
                 name: ["交流电压", "频率", "交流电流", "有功功率", "无功功率", "有功电量", "无功电量", "直流电压", "直流电流", "直流电量"],
                 addressName: [],
@@ -136,11 +94,11 @@
                     [],//current
                     [],//activePower
                     [],//reactivePower
-                    [],//reactiveElectric
                     [],//activeElectric
+                    [],//reactiveElectric
+                    [],//dcVoltage
                     [],//dcCurrent
                     [],//dcElectric
-                    [],//dcVoltage
                 ],
                 transmissionOption: [
                     [],//voltage
@@ -148,17 +106,17 @@
                     [],//current
                     [],//activePower
                     [],//reactivePower
-                    [],//reactiveElectric
                     [],//activeElectric
+                    [],//reactiveElectric
+                    [],//dcVoltage
                     [],//dcCurrent
                     [],//dcElectric
-                    [],//dcVoltage
                 ]
             }
         },
         created() {
-            this.getData();
             this.getAddress();
+            this.getData();
         },
         mounted() {
             // 基于准备好的dom，初始化echarts实例
@@ -166,49 +124,45 @@
         },
         methods: {
             getData() {
-                this.$axios.get("/api/arm2web/api/data?address=" + this.currentAddress)
+                this.$axios.get("api/api/arm2web/api/data?address=" + this.currentAddress)
                     .then(
                         res => {
                             const self = this;
                             const Data = res.data.data;
-                            // console.log(Data);
                             Data.forEach((item, index) => {
                                 let measureData = item.measureData;
-                                let transmissionData=item.transmissionData;
-                                this.addObj(this.measureOption[0], index, measureData.voltage);
-                                this.addObj(this.measureOption[1], index, measureData.frequency);
-                                this.addObj(this.measureOption[2], index, measureData.current);
-                                this.addObj(this.measureOption[3], index, measureData.activePower);
-                                this.addObj(this.measureOption[4], index, measureData.reactivePower);
-                                this.addObj(this.measureOption[5], index, measureData.reactiveElectric);
-                                this.addObj(this.measureOption[6], index, measureData.activeElectric);
-                                this.addObj(this.measureOption[7], index, measureData.dcCurrent);
-                                this.addObj(this.measureOption[8], index, measureData.dcElectric);
-                                this.addObj(this.measureOption[9], index, measureData.dcVoltage);
-                                this.addObj(this.transmissionOption[0], index, transmissionData.voltage);
-                                this.addObj(this.transmissionOption[1], index, transmissionData.frequency);
-                                this.addObj(this.transmissionOption[2], index, transmissionData.current);
-                                this.addObj(this.transmissionOption[3], index, transmissionData.activePower);
-                                this.addObj(this.transmissionOption[4], index, transmissionData.reactivePower);
-                                this.addObj(this.transmissionOption[5], index, transmissionData.reactiveElectric);
-                                this.addObj(this.transmissionOption[6], index, transmissionData.activeElectric);
-                                this.addObj(this.transmissionOption[7], index, transmissionData.dcCurrent);
-                                this.addObj(this.transmissionOption[8], index, transmissionData.dcElectric);
-                                this.addObj(this.transmissionOption[9], index, transmissionData.dcVoltage);
+                                let transmissionData = item.transmissionData;
+                                let mOption = 0;
+                                let tOption = 0;
+                                for (let key in measureData) {
+                                    this.addObj(this.measureOption[mOption], index, measureData[key]);
+                                    mOption++;
+                                }
+                                for (let key in transmissionData) {
+                                    this.addObj(this.transmissionOption[tOption], index, transmissionData[key]);
+                                    tOption++;
+                                }
                             });
                             this.showChart = true;
+                            let i = 0;
+                            for (let key in this.tableData[0]) {
+                                if (key != 'data') {
+                                    this.tableData[0][key] = this.measureOption[i][14];
+                                    this.tableData[1][key] = this.transmissionOption[i][14];
+                                    i++;
+                                }
+                            }
                             setTimeout(function () {
                                 self.getData();
                                 self.reload();
                             }, 2000);//2秒后定时发送请求
                         }
-                    );
+                    )
             },
             getAddress() {
-                this.$axios.get("/api/arm2web/api/address")
+                this.$axios.get("api/api/arm2web/api/address")
                     .then(
                         res => {
-                            console.log(res);
                             const addressName = res.data.data;
                             this.addressName = addressName;
                         }
@@ -225,6 +179,10 @@
                 const {index} = e;
                 this.currentAddress = index;
                 this.getData();
+            },
+            changeView() {
+                this.showForm = !this.showForm;
+                this.showChartContainer = !this.showChartContainer;
             },
             addObj(accept, index, obj) {
                 Vue.set(accept, index, obj)
@@ -243,13 +201,16 @@
         color: #2c3e50;
     }
 
-    .leftAreaContainer {
 
+    .btn {
+        margin-bottom: 10px !important;
     }
-    .formContainer{
+
+    .formContainer {
         margin: 0 auto;
         width: 80%;
     }
+
     .chart {
         margin-bottom: 20px;
     }
