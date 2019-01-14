@@ -3,9 +3,7 @@
         <el-button class="btn" type="primary" v-on:click="changeView()">{{showChartContainer == true
             ?'显示实时表格':'显示实时折线图'}}
         </el-button>
-        <router-link  to="/history">
-            <el-button class="btn historyBtn" type="success">历史记录</el-button>
-        </router-link>
+        <el-button class="btn historyBtn" type="success" v-on:click="locationHistory()">历史记录</el-button>
         <div class="topNavContainer">
             <el-tabs tab-position="tap" type="border-card" @tab-click="show($event)">
                 <el-tab-pane v-for="(Aitem,Aindex) in addressName" :key=Aindex :label=Aitem.message>
@@ -14,9 +12,9 @@
                             <el-tab-pane v-for="(Nitem,Nindex) in name" :key=Nindex :label=Nitem>
                                 <div class="rightAreaContainer">
                                     <div class="chart" v-cloak>
-                                        <!-- <chart v-if="showChart" :measureOption=measureOption[Nindex]
+                                         <chart v-if="showChart" :measureOption=measureOption[Nindex]
                                                 :name="name[Nindex]"
-                                                :transmissionOption="transmissionOption[Nindex]"></chart>-->
+                                                :transmissionOption="transmissionOption[Nindex]"></chart>
                                     </div>
                                 </div>
                             </el-tab-pane>
@@ -44,11 +42,12 @@
 </template>
 
 <script>
+    import Vue from 'vue'
     import Chart from '../components/Chart'
 
     export default {
         name: "HomePage",
-        components:{
+        components: {
             Chart
         },
         provide() {
@@ -58,7 +57,7 @@
         },
         data() {
             return {
-                testData:{},
+                timeTag: {},
                 tableData: [{
                     data: '传输数据',
                     voltage: 0,
@@ -89,7 +88,7 @@
                 showChart: false,
                 name: ["交流电压", "频率", "交流电流", "有功功率", "无功功率", "有功电量", "无功电量", "直流电压", "直流电流", "直流电量"],
                 addressName: [],
-                currentAddress: 0,
+                currentAddress: 1,
                 measureOption: [
                     [],//voltage
                     [],//frequency
@@ -126,9 +125,9 @@
         },
         methods: {
             getData() {
-                clearTimeout(this.testData);
+                clearTimeout(this.timeTag);
                 let a;
-                this.$axios.get("api/arm2web/api/data?address=" + this.currentAddress)
+                this.$axios.get("api/api/data?address=" + this.currentAddress)
                     .then(
                         res => {
                             const self = this;
@@ -147,7 +146,6 @@
                                     tOption++;
                                 }
                             });
-                            this.showChart = true;
                             let i = 0;
                             for (let key in this.tableData[0]) {
                                 if (key != 'data') {
@@ -156,21 +154,20 @@
                                     i++;
                                 }
                             }
-                            a=setTimeout(function () {
+                            a = setTimeout(function () {
                                 self.getData();
                                 self.reload();
                             }, 2000);//2秒后定时发送请求
                             return a
                         }
                     ).then(
-                    res=>{
-                        this.testData=res;
-                        console.log(this.testData);
+                    res => {
+                        this.timeTag = res;
                     }
                 )
             },
             getAddress() {
-                this.$axios.get("api/arm2web/api/address")
+                this.$axios.get("api/api/address")
                     .then(
                         res => {
                             const addressName = res.data.data;
@@ -196,6 +193,13 @@
             },
             addObj(accept, index, obj) {
                 Vue.set(accept, index, obj)
+            },
+            locationHistory(){
+                this.currentAddress++;
+                const id=this.currentAddress;
+                this.$router.push({
+                    path: `/history/${id}`,
+                })
             }
         }
     }
@@ -206,6 +210,7 @@
         font-family: 'Avenir', Helvetica, Arial, sans-serif;
         -webkit-font-smoothing: antialiased;
         -moz-osx-font-smoothing: grayscale;
+        position: relative;
         margin-top: 60px;
         text-align: center;
         color: #2c3e50;
@@ -214,6 +219,11 @@
 
     .btn {
         margin-bottom: 10px !important;
+    }
+
+    .historyBtn {
+        position: absolute;
+        right: 5px;
     }
 
     .formContainer {

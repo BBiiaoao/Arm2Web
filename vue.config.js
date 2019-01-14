@@ -34,12 +34,12 @@ module.exports = {
         // proxy: null,                                // 设置代理
         proxy: {                                    // 配置跨域
             '/api':{
-                // target:'http://192.168.3.153:8080', //源地址
-                target:'http://120.78.191.131:8080', //源地址
+                target:'http://127.0.0.1:8080', //源地址
+                // target:'http://120.78.191.131:8080', //源地址
                 changeOrigin:true,                  //改变源
                 ws:true,                            //是否代理websockets
                 pathRewrite:{
-                    '^/api':''
+                    '^/api':'',
                 }
             }
         },                                           // 配置跨域处理,只有一个代理
