@@ -5,13 +5,13 @@
         </el-button>
         <el-button class="btn historyBtn" type="success" v-on:click="locationHistory()">历史记录</el-button>
         <div class="topNavContainer">
-            <el-tabs tab-position="tap" type="border-card" @tab-click="show($event)">
+            <el-tabs tab-position="tap" type="border-card" @tab-click="switchAddress($event)">
                 <el-tab-pane v-for="(Aitem,Aindex) in addressName" :key=Aindex :label=Aitem.message>
-                    <div class="leftAreaContainer" v-if="showChartContainer">
-                        <el-tabs tab-position="left" @tab-click="reload()">
+                    <div class="leftAreaContainer" v-if="showChartContainer && currentAddress==Aindex">
+                        <el-tabs tab-position="left" @tab-click="switchOption($event)">
                             <el-tab-pane v-for="(Nitem,Nindex) in name" :key=Nindex :label=Nitem>
-                                <div class="rightAreaContainer">
-                                    <div class="chart" v-cloak>
+                                <div v-if="currentOption==Nindex" class="rightAreaContainer">
+                                    <div class="chart">
                                          <chart v-if="showChart" :measureOption=measureOption[Nindex]
                                                 :name="name[Nindex]"
                                                 :transmissionOption="transmissionOption[Nindex]"></chart>
@@ -88,7 +88,8 @@
                 showChart: false,
                 name: ["交流电压", "频率", "交流电流", "有功功率", "无功功率", "有功电量", "无功电量", "直流电压", "直流电流", "直流电量"],
                 addressName: [],
-                currentAddress: 1,
+                currentAddress: 0,
+                currentOption: 0,
                 measureOption: [
                     [],//voltage
                     [],//frequency
@@ -127,7 +128,7 @@
             getData() {
                 clearTimeout(this.timeTag);
                 let a;
-                this.$axios.get("api/api/data?address=" + this.currentAddress)
+                this.$axios.get("api/arm2web/api/data?address=" + this.currentAddress)
                     .then(
                         res => {
                             const self = this;
@@ -146,15 +147,20 @@
                                     tOption++;
                                 }
                             });
-                            let i = 0;
-                            for (let key in this.tableData[0]) {
-                                if (key != 'data') {
-                                    this.tableData[0][key] = this.measureOption[i][14];
-                                    this.tableData[1][key] = this.transmissionOption[i][14];
-                                    i++;
+                            if(this.showForm) {
+                                let i = 0;
+                                for (let key in this.tableData[0]) {
+                                    if (key != 'data') {
+                                        this.tableData[0][key] = this.measureOption[i][14];
+                                        this.tableData[1][key] = this.transmissionOption[i][14];
+                                        i++;
+                                    }
                                 }
                             }
                             a = setTimeout(function () {
+                                this.measureOption=null;
+                                this.transmissionOption=null;
+                                this.tableData=null;
                                 self.getData();
                                 self.reload();
                             }, 2000);//2秒后定时发送请求
@@ -167,7 +173,7 @@
                 )
             },
             getAddress() {
-                this.$axios.get("api/api/address")
+                this.$axios.get("api/arm2web/api/address")
                     .then(
                         res => {
                             const addressName = res.data.data;
@@ -181,11 +187,13 @@
                     this.showChart = true
                 });
             },
-            show(e) {
-                this.reload();
+            switchAddress(e) {
                 const {index} = e;
                 this.currentAddress = index;
-                this.getData();
+            },
+            switchOption(e){
+                const {index} = e;
+                this.currentOption = index;
             },
             changeView() {
                 this.showForm = !this.showForm;
